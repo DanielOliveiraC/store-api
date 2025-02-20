@@ -3,10 +3,14 @@ package com.geek.store.service;
 import com.geek.store.model.UserModel;
 import com.geek.store.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -20,10 +24,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("Usuário não encontrado: " + username);
         }
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getUsername())
-                .password(user.getPassword()) // Senha já deve estar criptografada no banco
-                .roles("USER") // Você pode personalizar as roles aqui
-                .build();
+
+        return new User(
+            user.getUsername(),
+            user.getPassword(),
+            Collections.singletonList(new SimpleGrantedAuthority(user.getRole() != null ? user.getRole() : "ROLE_USER"))
+        );
     }
 }

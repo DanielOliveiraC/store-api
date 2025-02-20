@@ -1,10 +1,71 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Perfil</title>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .profile-info {
+            margin: 20px 0;
+        }
+        .profile-info p {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .profile-info label {
+            font-weight: bold;
+            display: inline-block;
+            width: 100px;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .button.logout {
+            background-color: #dc3545;
+        }
+        .button:hover {
+            opacity: 0.9;
+        }
+    </style>
 </head>
 <body>
-    <h2>Bem-vindo, <span th:text="${user}"></span>!</h2>
-    <a href="/users/logout">Sair</a>
+    <div class="container">
+        <h2>Perfil do Usuário</h2>
+        
+        <div class="profile-info">
+            <p>
+                <label>Usuário:</label>
+                <span th:text="${user.username}"></span>
+            </p>
+            <p>
+                <label>Email:</label>
+                <span th:text="${user.email}"></span>
+            </p>
+            <p>
+                <label>Função:</label>
+                <span th:text="${user.role}"></span>
+            </p>
+        </div>
+
+        <form th:action="@{/users/logout}" method="post">
+            <button type="submit" class="button logout">Sair</button>
+        </form>
+    </div>
 </body>
 </html>

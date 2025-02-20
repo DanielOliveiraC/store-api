@@ -3,57 +3,86 @@ package com.geek.store.controller;
 import com.geek.store.model.UserModel;
 import com.geek.store.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/users")
-@CrossOrigin("*")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    // Exibe o formulário de login
     @GetMapping("/login")
     public String login() {
-        return "login"; // Redireciona para a página login.html
+        return "login";
     }
 
-    // Exibe o formulário de registro
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        model.addAttribute("user", new UserModel());
-        return "register"; // Redireciona para a página register.html
+        if (!model.containsAttribute("user")) {
+            model.addAttribute("user", new UserModel());
+        }
+        return "register";
     }
 
-    // Processa o formulário de registro
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody UserModel user) {
-        userService.createUser(user);
-        return ResponseEntity.ok("Usuário cadastrado com sucesso!");
+    public String registerUser(@ModelAttribute("user") UserModel user, 
+                             BindingResult result, 
+                             RedirectAttributes redirectAttributes) {
+        try {
+            // Check if username exists
+            if (userService.existsByUsername(user.getUsername())) {
+                result.rejectValue("username", "error.user", "Username already exists");
+            }
+
+            // Check if email exists
+            if (userService.existsByEmail(user.getEmail())) {
+                result.rejectValue("email", "error.user", "Email already exists");
+            }
+
+            if (result.hasErrors()) {
+                redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
+                redirectAttributes.addFlashAttribute("user", user);
+                return "redirect:/users/register";
+            }
+
+            userService.createUser(user);
+            return "redirect:/users/login?success";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error registering user: " + e.getMessage());
+            return "redirect:/users/register?error";
+        }
     }
 
-    // Logout
-    @GetMapping("/logout")
-    public String logout() {
-        SecurityContextHolder.clearContext();
-        return "redirect:/users/login?logout";
-    }
-
-    // Página do perfil do usuário
     @GetMapping("/profile")
     public String profile(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        model.addAttribute("user", authentication.getName());
-        return "profile";
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            UserModel user = userService.findByUsername(auth.getName());
+            if (user != null) {
+                model.addAttribute("user", user);
+                return "profile";
+            }
+        }
+        return "redirect:/users/login";
+    }
+
+    @PostMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return "redirect:/users/login?logout";
     }
 }

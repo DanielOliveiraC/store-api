@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Home</title>
 </head>
 <body>
-    <h2>Bem-vindo!</h2>
-    <p>Você está logado.</p>
-    <a href="/logout">Sair</a>
+    <h2>Bem-vindo, <span sec:authentication="name"></span>!</h2>
+    <p>Você está logado como: <span sec:authentication="principal.authorities"></span></p>
+    <form th:action="@{/users/logout}" method="post">
+        <button type="submit">Sair</button>
+    </form>
 </body>
 </html>

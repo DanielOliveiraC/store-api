@@ -2,16 +2,81 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Registro</title>
+    <style>
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .error-message {
+            color: red;
+            margin-bottom: 15px;
+        }
+        .success-message {
+            color: green;
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h2>Registrar</h2>
-    <form th:action="@{/users/register}" method="post" th:object="${user}">
-        <label for="username">Usuário:</label>
-        <input type="text" id="username" th:field="*{username}" required>
-        <label for="password">Senha:</label>
-        <input type="password" id="password" th:field="*{password}" required>
-        <button type="submit">Registrar</button>
-    </form>
-    <p>Já tem uma conta? <a th:href="@{/users/login}">Faça login</a></p>
+    <div class="container">
+        <h2>Registrar</h2>
+        
+        <div th:if="${param.error}" class="error-message">
+            Erro ao registrar usuário. Por favor, tente novamente.
+        </div>
+
+        <form th:action="@{/users/register}" method="post" th:object="${user}">
+            <div class="form-group">
+                <label for="username">Usuário:</label>
+                <input type="text" id="username" th:field="*{username}" required autofocus>
+                <span th:if="${#fields.hasErrors('username')}" class="error-message" th:errors="*{username}"></span>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" th:field="*{email}" required>
+                <span th:if="${#fields.hasErrors('email')}" class="error-message" th:errors="*{email}"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" th:field="*{password}" required>
+                <span th:if="${#fields.hasErrors('password')}" class="error-message" th:errors="*{password}"></span>
+            </div>
+
+            <button type="submit">Registrar</button>
+        </form>
+        
+        <p style="margin-top: 15px;">
+            Já tem uma conta? <a th:href="@{/users/login}">Faça login</a>
+        </p>
+    </div>
 </body>
 </html>
