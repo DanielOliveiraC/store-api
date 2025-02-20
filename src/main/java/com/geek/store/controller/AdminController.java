@@ -30,8 +30,8 @@ public class AdminController {
                                 RedirectAttributes redirectAttributes) {
         try {
             productService.createProduct(product);
-            redirectAttributes.addFlashAttribute("success", true);
-            return "redirect:/admin/products/register";
+            redirectAttributes.addFlashAttribute("success", "Produto cadastrado com sucesso!");
+            return "redirect:/products";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Erro ao cadastrar produto: " + e.getMessage());
             redirectAttributes.addFlashAttribute("product", product);
@@ -39,20 +39,19 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/products/{id}/delete")
-    public String deleteProduct(@PathVariable String id, 
-                              RedirectAttributes redirectAttributes) {
+    @GetMapping("/products/{id}/edit")
+    public String showEditForm(@PathVariable String id, Model model) {
         try {
-            productService.deleteProduct(id);
-            redirectAttributes.addFlashAttribute("success", "Produto removido com sucesso!");
+            ProductModel product = productService.findById(id);
+            model.addAttribute("product", product);
+            return "admin/product-edit";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Erro ao remover produto: " + e.getMessage());
+            return "redirect:/products";
         }
-        return "redirect:/products";
     }
 
     @PostMapping("/products/{id}/update")
-    public String updateProduct(@PathVariable String id, 
+    public String updateProduct(@PathVariable String id,
                               @ModelAttribute ProductModel product,
                               RedirectAttributes redirectAttributes) {
         try {
@@ -60,6 +59,18 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("success", "Produto atualizado com sucesso!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Erro ao atualizar produto: " + e.getMessage());
+        }
+        return "redirect:/products";
+    }
+
+    @PostMapping("/products/{id}/delete")
+    public String deleteProduct(@PathVariable String id, 
+                              RedirectAttributes redirectAttributes) {
+        try {
+            productService.deleteProduct(id);
+            redirectAttributes.addFlashAttribute("success", "Produto excluído com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erro ao excluir produto: " + e.getMessage());
         }
         return "redirect:/products";
     }

@@ -1,77 +1,67 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Login</title>
+    <title>Login - Loja Virtual</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        .container {
+        html, body {
+            height: 100%;
+        }
+        .login-container {
             max-width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 15px;
         }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .error-message {
-            color: red;
-            margin-bottom: 15px;
-        }
-        .success-message {
-            color: green;
-            margin-bottom: 15px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
+        .form-floating {
+            margin-bottom: 1rem;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h2>Login</h2>
-        
-        <div th:if="${param.error}" class="error-message">
-            Usuário ou senha inválidos.
-        </div>
-        <div th:if="${param.logout}" class="success-message">
-            Você foi desconectado com sucesso.
-        </div>
-        <div th:if="${param.success}" class="success-message">
-            Registro realizado com sucesso. Por favor, faça login.
-        </div>
+<body class="d-flex align-items-center py-4 bg-light">
+    <main class="login-container w-100 m-auto">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-4 fw-normal text-center">Login</h1>
 
-        <form th:action="@{/users/login}" method="post">
-            <div class="form-group">
-                <label for="username">Usuário:</label>
-                <input type="text" id="username" name="username" required autofocus>
+                <div th:if="${param.error}" class="alert alert-danger">
+                    Usuário ou senha inválidos.
+                </div>
+                <div th:if="${param.logout}" class="alert alert-success">
+                    Você foi desconectado com sucesso.
+                </div>
+                <div th:if="${param.success}" class="alert alert-success">
+                    Registro realizado com sucesso. Por favor, faça login.
+                </div>
+
+                <form th:action="@{/users/login}" method="post">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Usuário" required autofocus>
+                        <label for="username">Usuário</label>
+                    </div>
+                    
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Senha" required>
+                        <label for="password">Senha</label>
+                    </div>
+
+                    <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">
+                        <i class="bi bi-box-arrow-in-right"></i> Entrar
+                    </button>
+                    
+                    <p class="text-center mb-0">
+                        Não tem uma conta? 
+                        <a th:href="@{/users/register}" class="text-decoration-none">Registre-se</a>
+                    </p>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="password">Senha:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit">Entrar</button>
-        </form>
-        <p style="margin-top: 15px;">
-            Não tem uma conta? <a th:href="@{/users/register}">Registre-se</a>
-        </p>
-    </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title>Cadastro de Produtos - Admin</title>
+    <title>Editar Produto - Admin</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap CSS -->
@@ -32,22 +32,23 @@
             <div class="col-md-8">
                 <div class="card shadow-sm">
                     <div class="card-body p-4">
-                        <h2 class="card-title mb-4">Cadastro de Produto</h2>
+                        <h2 class="card-title mb-4">Editar Produto</h2>
 
                         <div th:if="${success}" class="alert alert-success">
-                            Produto cadastrado com sucesso!
+                            Produto atualizado com sucesso!
                         </div>
                         <div th:if="${error}" class="alert alert-danger" th:text="${error}">
-                            Erro ao cadastrar produto.
+                            Erro ao atualizar produto.
                         </div>
 
-                        <form th:action="@{/admin/products/register}" method="post" th:object="${product}">
+                        <form th:action="@{/admin/products/{id}/update(id=${product.id})}" method="post" th:object="${product}">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Nome do Produto</label>
                                 <input type="text" 
                                        class="form-control" 
                                        id="name" 
                                        name="name" 
+                                       th:value="${product.name}"
                                        required>
                             </div>
 
@@ -57,7 +58,8 @@
                                           id="description" 
                                           name="description" 
                                           rows="3" 
-                                          required></textarea>
+                                          required
+                                          th:text="${product.description}"></textarea>
                             </div>
 
                             <div class="mb-3">
@@ -66,6 +68,7 @@
                                        class="form-control" 
                                        id="category" 
                                        name="category" 
+                                       th:value="${product.category}"
                                        required>
                             </div>
 
@@ -77,6 +80,7 @@
                                            class="form-control" 
                                            id="price" 
                                            name="price" 
+                                           th:value="${product.price}"
                                            required
                                            pattern="^\d+(\.\d{1,2})?$"
                                            title="Digite um valor válido (ex: 99.99)">
@@ -89,13 +93,17 @@
                                        class="form-control" 
                                        id="image" 
                                        name="image"
+                                       th:value="${product.image}"
                                        placeholder="https://exemplo.com/imagem.jpg">
                             </div>
 
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="bi bi-plus-circle"></i> Cadastrar Produto
+                                    <i class="bi bi-save"></i> Salvar Alterações
                                 </button>
+                                <a href="/products" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
                             </div>
                         </form>
                     </div>
