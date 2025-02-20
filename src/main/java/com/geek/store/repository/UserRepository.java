@@ -7,5 +7,5 @@ import com.geek.store.model.UserModel;
 
 @Repository
 public interface UserRepository extends MongoRepository <UserModel, String>{
-    
+    UserModel findByUsername(String username);   
 }
