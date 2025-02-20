@@ -1,18 +1,12 @@
 package com.geek.store.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
 @Document(collection = "products")
-public class ProductModel{
+public class ProductModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private String name;
     private String description;
@@ -20,8 +14,17 @@ public class ProductModel{
     private String price;
     private String image;
 
-    // Constructor
-    public ProductModel() {}
+    // Constructors
+    public ProductModel() {
+    }
+
+    public ProductModel(String name, String description, String category, String price, String image) {
+        this.name = name;
+        this.description = description;
+        this.category = category;
+        this.price = price;
+        this.image = image;
+    }
 
     // Getters and Setters
     public String getId() {
@@ -70,5 +73,17 @@ public class ProductModel{
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductModel{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", category='" + category + '\'' +
+                ", price='" + price + '\'' +
+                ", image='" + image + '\'' +
+                '}';
     }
 }
